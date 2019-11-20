@@ -8,4 +8,4 @@ group :development do
   gem 'rspec'
 end
 
-ruby '2.6.4'
+ruby '2.6.0'

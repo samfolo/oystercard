@@ -10,7 +10,8 @@ class Oystercard
   def initialize
     @balance = 0
     @credit_limit = CREDIT_LIMIT
-    @entry_station = nil
+    @entry_station = Station.new
+    @exit_station = Station.new
     @list_of_journeys = []
   end
 
@@ -24,7 +25,7 @@ class Oystercard
   def touch_in(entry_station)
     raise INSUFFICIENT_FUNDS if balance < MINIMUM_CREDIT
 
-    @entry_station = entry_station.name
+    @entry_station = entry_station
     @in_journey = true
   end
 
@@ -39,6 +40,18 @@ class Oystercard
     !@entry_station.nil?
   end
 
+  def print_list_of_journeys
+    journey_list_to_display = []
+    @list_of_journeys.each_with_index do |journey, i|
+      entry_name = format_name(journey[:entry_station].name)
+      entry_zone = journey[:entry_station].zone
+      exit_name = format_name(journey[:exit_station].name)
+      exit_zone = journey[:exit_station].zone
+      journey_list_to_display << "Journey #{i + 1}: #{entry_name} (zone #{entry_zone}) to #{exit_name} (zone #{exit_zone})"
+    end
+    journey_list_to_display
+  end
+
   private
 
   def deduct(amount)
@@ -46,6 +59,10 @@ class Oystercard
   end
 
   def store_journey(exit_station)
-    @list_of_journeys.push({ entry_station: entry_station, exit_station: exit_station.name })
+    @list_of_journeys.push({ entry_station: entry_station, exit_station: exit_station })
+  end
+
+  def format_name(name)
+    name.to_s.split("_").map { |word| word.capitalize }.join(" ")
   end
 end
