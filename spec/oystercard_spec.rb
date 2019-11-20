@@ -30,16 +30,6 @@ RSpec.describe Oystercard do
     end
   end
 
-  context '#deduct' do
-    it 'should reduce the balance by £10 when called with 10' do
-      expect { subject.deduct(10) }.to change { subject.balance }.by -10
-    end
-
-    it 'should reduce the balance by £15 when called with 15' do
-      expect { subject.deduct(15) }.to change { subject.balance }.by -15
-    end
-  end
-
   context 'when in journey' do
     it 'should know when it is being used for a journey' do
       test_oystercard.touch_in
@@ -52,6 +42,14 @@ RSpec.describe Oystercard do
       test_oystercard.touch_out
 
       expect(test_oystercard).not_to be_in_journey
+    end
+  end
+
+  context 'when touching out' do
+    it 'should deduct the minumum fare' do
+      test_oystercard.touch_in
+
+      expect { test_oystercard.touch_out }.to change { test_oystercard.balance }.by -Oystercard::MINIMUM_CREDIT
     end
   end
 
