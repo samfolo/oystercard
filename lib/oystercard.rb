@@ -61,11 +61,8 @@ class Oystercard
   end
 
   def fare
-    if @journey.entry_station && !@journey.exit_station
-      deduct(PENALTY_FARE) 
-      return
-    end
-    
+    deduct(PENALTY_FARE) && return if @journey.entry_station && !@journey.exit_station
+
     @journey.entry_station && @journey.exit_station ? deduct(MINIMUM_CREDIT) : deduct(PENALTY_FARE)
   end
 
@@ -74,6 +71,6 @@ class Oystercard
   end
 
   def format_name(name)
-    name.to_s.split("_").map { |word| word.capitalize }.join(" ")
+    name.to_s.split('_').map { |word| word.capitalize }.join(' ')
   end
 end

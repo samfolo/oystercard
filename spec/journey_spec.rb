@@ -4,7 +4,6 @@ RSpec.describe Journey do
   let(:new_journey) { Journey.new }
   let(:entry_station) { double(:station, name: :canada_water, zone: 1) }
   let(:exit_station) { double(:station, name: :liverpool_street, zone: 2) }
-  # let(:test_oystercard) { double(:oystercard, journey: new_journey, touch_in: :beep) }
 
   it 'remembers its entry station' do
     new_journey.register_entry_station(entry_station)
