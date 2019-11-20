@@ -1,5 +1,5 @@
 class Oystercard
-  attr_reader :balance, :maximum_credit_limit
+  attr_reader :balance, :maximum_credit_limit, :in_journey
 
   MAXIMUM_CREDIT_LIMIT = 90
   NEGATIVE_TOP_UP_AMOUNT = 'cannot top up a negative amount'
@@ -8,6 +8,7 @@ class Oystercard
   def initialize
     @balance = 0
     @maximum_credit_limit = MAXIMUM_CREDIT_LIMIT
+    @in_journey = false
   end
 
   def top_up(amount)
@@ -19,5 +20,17 @@ class Oystercard
 
   def deduct(amount)
     @balance -= amount
+  end
+
+  def touch_in
+    @in_journey = true
+  end
+
+  def touch_out
+    @in_journey = false
+  end
+
+  def in_journey?
+    @in_journey
   end
 end

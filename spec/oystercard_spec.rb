@@ -2,7 +2,7 @@ require 'oystercard'
 
 RSpec.describe Oystercard do
   let(:test_oystercard) { Oystercard.new }
-  
+
   it 'at first has a balance of 0' do
     expect(subject.balance).to be 0
   end
@@ -34,6 +34,21 @@ RSpec.describe Oystercard do
 
     it 'should reduce the balance by £15 when called with 15' do
       expect { subject.deduct(15) }.to change { subject.balance }.by -15
+    end
+  end
+
+  context 'when in journey' do
+    it 'should know when it is being used for a journey' do
+      test_oystercard.touch_in
+
+      expect(test_oystercard).to be_in_journey
+    end
+
+    it 'should know when it is not being used for a journey' do
+      test_oystercard.touch_in
+      test_oystercard.touch_out
+
+      expect(test_oystercard).not_to be_in_journey
     end
   end
 end
