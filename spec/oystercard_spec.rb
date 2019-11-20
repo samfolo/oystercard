@@ -5,6 +5,7 @@ RSpec.describe Oystercard do
   let(:empty_oystercard) { Oystercard.new }
   let(:entry_station) { double(:station, name: :canada_water, zone: 1) }
   let(:exit_station) { double(:station, name: :green_park, zone: 2) }
+  let(:test_journey) { double(:journey, entry_station: entry_station, exit_station: exit_station) }
 
   before(:each) do
     test_oystercard.top_up(10)
@@ -32,26 +33,29 @@ RSpec.describe Oystercard do
     end
   end
 
-  context 'when in journey' do
-    it 'should know when it is being used for a journey' do
-      test_oystercard.touch_in(entry_station)
+  describe '#touch_in' do
+    context 'when user has touched in and out on last journey' do
+      it 'should charge a penalty fare' do
+        test_oystercard.touch_in(entry_station)
 
-      expect(test_oystercard).to be_in_journey
-    end
-
-    it 'should know when it is not being used for a journey' do
-      test_oystercard.touch_in(entry_station)
-      test_oystercard.touch_out(exit_station)
-
-      expect(test_oystercard).not_to be_in_journey
+        expect { test_oystercard.touch_in(entry_station) }.to change { test_oystercard.balance }.by -Oystercard::PENALTY_FARE
+      end
     end
   end
 
-  context 'when touching out' do
-    it 'should deduct the minumum fare' do
-      test_oystercard.touch_in(entry_station)
+  describe '#touch_out' do
+    context 'when user touches in before' do
+      it 'should deduct the minumum fare' do
+        test_oystercard.touch_in(entry_station)
 
-      expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -Oystercard::MINIMUM_CREDIT
+        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -Oystercard::MINIMUM_CREDIT
+      end
+    end
+    
+    context 'when user fails to touch in before' do
+      it 'should charge a penalty fare' do
+        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -Oystercard::PENALTY_FARE
+      end
     end
   end
 
@@ -61,23 +65,7 @@ RSpec.describe Oystercard do
     end
   end
 
-  describe '#entry_station' do
-    before(:each) do
-      test_oystercard.touch_in(entry_station)
-    end
-
-    it 'remembers the entry station of a journey it is used for' do
-      test_oystercard.touch_in(entry_station)
-
-      expect(test_oystercard.entry_station).to be entry_station
-    end
-
-    it 'forgets the entry station once a journey is complete' do
-      test_oystercard.touch_out(exit_station)
-
-      expect(test_oystercard.entry_station).to be_nil
-    end
-
+  describe '#in_journey' do
   end
 
   describe "#print_list_of_journeys" do
