@@ -2,6 +2,11 @@ require 'oystercard'
 
 RSpec.describe Oystercard do
   let(:test_oystercard) { Oystercard.new }
+  let(:empty_oystercard) { Oystercard.new }
+
+  before(:each) do
+    test_oystercard.top_up(10)
+  end
 
   it 'at first has a balance of 0' do
     expect(subject.balance).to be 0
@@ -21,9 +26,7 @@ RSpec.describe Oystercard do
     end
 
     it 'cannot be topped up an amount which will exceed the maximum credit limit' do
-      test_oystercard.top_up(88)
-
-      expect { test_oystercard.top_up(5) }.to raise_error { Oystercard::TOP_UP_EXCEEDS_MAX_LIMIT }
+      expect { test_oystercard.top_up(81) }.to raise_error { Oystercard::TOP_UP_EXCEEDS_MAX_LIMIT }
     end
   end
 
@@ -49,6 +52,12 @@ RSpec.describe Oystercard do
       test_oystercard.touch_out
 
       expect(test_oystercard).not_to be_in_journey
+    end
+  end
+
+  context 'when credit is too low' do
+    it 'prevents use on a journey' do
+      expect { empty_oystercard.touch_in }.to raise_error { Oystercard::INSUFFICIENT_FUNDS }
     end
   end
 end
