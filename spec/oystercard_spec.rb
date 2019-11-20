@@ -4,6 +4,7 @@ RSpec.describe Oystercard do
   let(:test_oystercard) { Oystercard.new }
   let(:empty_oystercard) { Oystercard.new }
   let(:canada_water) { double(:station, name: :canada_water) }
+  let(:green_park) { double(:station, name: :green_park) }
 
   before(:each) do
     test_oystercard.top_up(10)
@@ -40,7 +41,7 @@ RSpec.describe Oystercard do
 
     it 'should know when it is not being used for a journey' do
       test_oystercard.touch_in(canada_water)
-      test_oystercard.touch_out
+      test_oystercard.touch_out(green_park)
 
       expect(test_oystercard).not_to be_in_journey
     end
@@ -50,7 +51,7 @@ RSpec.describe Oystercard do
     it 'should deduct the minumum fare' do
       test_oystercard.touch_in(canada_water)
 
-      expect { test_oystercard.touch_out }.to change { test_oystercard.balance }.by -Oystercard::MINIMUM_CREDIT
+      expect { test_oystercard.touch_out(green_park) }.to change { test_oystercard.balance }.by -Oystercard::MINIMUM_CREDIT
     end
   end
 
@@ -60,7 +61,7 @@ RSpec.describe Oystercard do
     end
   end
 
-  context '#entry_station' do
+  describe '#entry_station' do
     before(:each) do
       test_oystercard.touch_in(canada_water)
     end
@@ -72,9 +73,22 @@ RSpec.describe Oystercard do
     end
 
     it 'forgets the entry station once a journey is complete' do
-      test_oystercard.touch_out
+      test_oystercard.touch_out(green_park)
 
       expect(test_oystercard.entry_station).to be_nil
+    end
+  end
+
+  describe '#list_of_journeys' do
+    it 'is empty if no journeys have been made' do
+      expect(empty_oystercard.list_of_journeys).to eq []
+    end
+
+    it 'stores the entry and exit stations at the end of a journey' do
+      test_oystercard.touch_in(canada_water)
+      test_oystercard.touch_out(green_park)
+
+      expect(test_oystercard.list_of_journeys).to include ({ entry_station: :canada_water, exit_station: :green_park })
     end
   end
 end
