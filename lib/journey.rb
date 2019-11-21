@@ -1,6 +1,9 @@
 class Journey
   attr_reader :entry_station, :exit_station
 
+  MINIMUM_FARE = 1
+  PENALTY_FARE = 6
+
   def register_entry_station(station)
     @entry_station = station
   end
@@ -18,7 +21,13 @@ class Journey
     !@entry_station.nil?
   end
 
-  def valid_journey?
+  def complete_journey?
     @entry_station && @exit_station
+  end
+
+  def fare
+    return 0 if !entry_station && !exit_station
+    
+    complete_journey? ? MINIMUM_FARE : PENALTY_FARE
   end
 end

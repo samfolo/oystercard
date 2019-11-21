@@ -16,5 +16,13 @@ RSpec.describe Journey do
 
     expect(new_journey.exit_station).to eq exit_station
   end
-  
+
+  # describe '#fare' do
+  #   it 'is charges the penalty amount at the end of an invalid journey' do
+  #     new_journey.register_entry_station(entry_station)
+
+  #     expect { new_journey.fare }.to 
+  #   end
+  # end
+
 end

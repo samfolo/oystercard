@@ -5,7 +5,7 @@ RSpec.describe Oystercard do
   let(:empty_oystercard) { Oystercard.new }
   let(:entry_station) { double(:station, name: :canada_water, zone: 1) }
   let(:exit_station) { double(:station, name: :green_park, zone: 2) }
-  let(:test_journey) { double(:journey, entry_station: entry_station, exit_station: exit_station) }
+  let(:test_journey) { double(:journey, entry_station: entry_station, exit_station: exit_station, min_fare: 1, penalty_fare: 6) }
 
   before(:each) do
     test_oystercard.top_up(10)
@@ -28,17 +28,18 @@ RSpec.describe Oystercard do
       expect { test_oystercard.top_up }.to raise_error { Oystercard::NEGATIVE_TOP_UP_AMOUNT }
     end
 
-    it 'cannot be topped up an amount which will exceed the maximum credit limit' do
+    it 'cannot be topped up an amount which will exceed the maximum balance' do
       expect { test_oystercard.top_up(81) }.to raise_error { Oystercard::TOP_UP_EXCEEDS_MAX_LIMIT }
     end
   end
 
+  ##
   describe '#touch_in' do
     context 'when user has not touched out on last journey' do
       it 'should charge a penalty fare' do
         test_oystercard.touch_in(entry_station)
 
-        expect { test_oystercard.touch_in(entry_station) }.to change { test_oystercard.balance }.by -Oystercard::PENALTY_FARE
+        expect { test_oystercard.touch_in(entry_station) }.to change { test_oystercard.balance }.by -6
       end
     end
   end
@@ -48,18 +49,18 @@ RSpec.describe Oystercard do
       it 'should deduct the minumum fare' do
         test_oystercard.touch_in(entry_station)
 
-        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -Oystercard::MINIMUM_CREDIT
+        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -test_journey.min_fare
       end
     end
     
     context 'when user fails to touch in before' do
       it 'should charge a penalty fare' do
-        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -Oystercard::PENALTY_FARE
+        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -test_journey.penalty_fare
       end
     end
   end
 
-  context 'when credit is too low' do
+  context 'when fare is too low' do
     it 'prevents use on a journey' do
       expect { empty_oystercard.touch_in(entry_station) }.to raise_error { Oystercard::INSUFFICIENT_FUNDS }
     end
@@ -73,5 +74,5 @@ RSpec.describe Oystercard do
       expect(test_oystercard.print_list_of_journeys.first).to eq 'Journey 1: Canada Water (zone 1) to Green Park (zone 2)'
     end
   end
-  
+
 end
