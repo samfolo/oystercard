@@ -14,6 +14,8 @@ class JourneyLog
 
   def finish(exit_station)
     @journey.register_exit_station(exit_station)
+
+    current_journey
   end
 
   def journeys
@@ -51,6 +53,8 @@ class JourneyLog
     return @journey unless current_journey_complete?
 
     @journey = @journey_class.new
+    p @journey.entry_station.name
+    p @journey.exit_station.name
   end
 
   def current_journey_complete?
