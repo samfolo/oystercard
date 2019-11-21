@@ -1,7 +1,7 @@
 require 'journey'
 
 class Oystercard
-  attr_reader :balance, :credit_limit, :in_journey, :entry_station, :list_of_journeys, :journey
+  attr_reader :balance, :credit_limit, :list_of_journeys, :journey
 
   CREDIT_LIMIT = 90
   MINIMUM_CREDIT = 1
@@ -61,9 +61,7 @@ class Oystercard
   end
 
   def fare
-    deduct(PENALTY_FARE) && return if @journey.entry_station && !@journey.exit_station
-
-    @journey.entry_station && @journey.exit_station ? deduct(MINIMUM_CREDIT) : deduct(PENALTY_FARE)
+    @journey.valid_journey? ? deduct(MINIMUM_CREDIT) : deduct(PENALTY_FARE)
   end
 
   def store_journey(exit_station)

@@ -16,4 +16,5 @@ RSpec.describe Journey do
 
     expect(new_journey.exit_station).to eq exit_station
   end
+  
 end

@@ -34,7 +34,7 @@ RSpec.describe Oystercard do
   end
 
   describe '#touch_in' do
-    context 'when user has touched in and out on last journey' do
+    context 'when user has not touched out on last journey' do
       it 'should charge a penalty fare' do
         test_oystercard.touch_in(entry_station)
 
@@ -73,4 +73,5 @@ RSpec.describe Oystercard do
       expect(test_oystercard.print_list_of_journeys.first).to eq 'Journey 1: Canada Water (zone 1) to Green Park (zone 2)'
     end
   end
+  
 end

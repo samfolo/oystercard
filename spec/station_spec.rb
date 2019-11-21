@@ -14,4 +14,5 @@ RSpec.describe Station do
       expect(station.zone).to eq 2
     end
   end
+  
 end
