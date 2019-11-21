@@ -10,6 +10,7 @@ RSpec.describe JourneyLog do
   before(:each) do
     allow(test_journey).to receive(:register_entry_station)
     allow(test_journey).to receive(:register_exit_station)
+    allow(test_journey).to receive(:complete_journey?).and_return(false)
   end
 
   describe '#start' do
@@ -22,24 +23,25 @@ RSpec.describe JourneyLog do
   end
 
   describe '#finish' do
-    it 'registers a journey has finished' do
+    before(:each) do
       allow(test_journey).to receive(:entry_station).and_return(entry_station)
-      allow(test_journey).to receive(:exit_station).and_return(exit_station)
+      allow(test_journey).to receive(:exit_station).and_return(exit_station, exit_station, exit_station, nil)
+    end
+
+    it 'registers a journey has finished' do
       test_log.start(entry_station)
       test_log.finish(exit_station)
-
+      
       expect(test_log.journeys.first).to eq 'Journey 1: Canada Water (zone 1) to Green Park (zone 2)'
     end
 
     it 'initialises a new journey' do
-      allow(test_journey).to receive(:exit_station).and_return(exit_station)
-      allow(test_journey).to receive(:complete_journey?).and_return(true)
       test_log.start(entry_station)
       test_log.finish(exit_station)
       test_log.start(entry_station)
 
       expect(test_log.journeys).to eq(['Journey 1: Canada Water (zone 1) to Green Park (zone 2)',
-                                        'Journey 1: Canada Water (zone 1) to N/A (zone N/A)'])
+                                       'Journey 2: Canada Water (zone 1) to N/A (zone N/A)'])
     end
   end
 

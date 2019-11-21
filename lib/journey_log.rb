@@ -4,17 +4,17 @@ class JourneyLog
   def initialize(journey_class = Journey)
     @journey_history = []
     @journey_class = journey_class
-    @journey = @journey_class.new
+    @current_journey = @journey_class.new
   end
 
   def start(entry_station)
-    @journey.register_entry_station(entry_station)
-    @journey_history.unshift @journey
+    # print @current_journey.exit_station.name
+    @current_journey.register_entry_station(entry_station)
+    @journey_history.push @current_journey
   end
 
   def finish(exit_station)
-    @journey.register_exit_station(exit_station)
-
+    @current_journey.register_exit_station(exit_station)
     current_journey
   end
 
@@ -50,14 +50,11 @@ class JourneyLog
   end
 
   def current_journey
-    return @journey unless current_journey_complete?
-
-    @journey = @journey_class.new
-    p @journey.entry_station.name
-    p @journey.exit_station.name
+    return @current_journey unless current_journey_complete?
+    @current_journey = @journey_class.new
   end
 
   def current_journey_complete?
-    @journey.complete_journey?
+    @current_journey.complete_journey?
   end
 end
