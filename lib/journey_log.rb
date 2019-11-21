@@ -13,12 +13,13 @@ class JourneyLog
   end
 
   def finish(exit_station)
+    @journey.register_exit_station(exit_station)
   end
 
   def journeys
     journey_list_to_display = []
     @journey_history.each_with_index do |journey, i|
-      
+
       if journey.entry_station == nil
         entry_name = 'N/A'
         entry_zone = 'N/A'
@@ -26,7 +27,7 @@ class JourneyLog
         entry_name = format_name(journey.entry_station.name)
         entry_zone = journey.entry_station.zone
       end
-        
+
       if journey.exit_station == nil
         exit_name = 'N/A'
         exit_zone = 'N/A'
@@ -41,7 +42,7 @@ class JourneyLog
   end
 
   private
-  
+
   def format_name(name)
     name.to_s.split('_').map { |word| word.capitalize }.join(' ')
   end

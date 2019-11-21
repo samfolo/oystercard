@@ -22,6 +22,7 @@ RSpec.describe JourneyLog do
 
   describe '#finish' do
     it 'registers a journey has finished' do
+      allow(test_journey).to receive(:exit_station).and_return(exit_station)
       test_log.start(entry_station)
       test_log.finish(exit_station)
 
