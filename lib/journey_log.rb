@@ -23,7 +23,7 @@ class JourneyLog
     journey_list_to_display = []
     @journey_history.each_with_index do |journey, i|
       data = format_journey(journey)
-      journey_list_to_display << "Journey #{i + 1}: #{data[0]} (zone #{data[1]}) to #{data[2]} (zone #{data[3]})"
+      journey_list_to_display << "Journey #{i + 1}: #{data[0]} (Zone #{data[1]}) to #{data[2]} (Zone #{data[3]})"
     end
     journey_list_to_display
   end

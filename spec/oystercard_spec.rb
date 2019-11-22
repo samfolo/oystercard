@@ -73,7 +73,7 @@ RSpec.describe Oystercard do
       test_oystercard.touch_in(entry_station)
       test_oystercard.touch_out(exit_station)
 
-      expect(test_oystercard.print_list_of_journeys.first).to eq 'Journey 1: Canada Water (zone 2) to Green Park (zone 4)'
+      expect(test_oystercard.print_list_of_journeys.first).to eq 'Journey 1: Canada Water (Zone 2) to Green Park (Zone 4)'
     end
   end
 

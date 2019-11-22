@@ -10,19 +10,19 @@ RSpec.describe JourneyLog do
   before(:each) do
     allow(test_journey).to receive(:register_entry_station)
     allow(test_journey).to receive(:register_exit_station)
-    allow(test_journey).to receive(:complete_journey?).and_return(false)
+    allow(test_journey).to receive(:complete_journey?)
   end
 
-  describe '#start' do
+  describe 'at the start of a journey' do
     it 'registers a journey has started' do
       allow(test_journey).to receive(:entry_station).and_return(entry_station)
       test_log.start(entry_station)
 
-      expect(test_log.journeys.first).to eq 'Journey 1: Canada Water (zone 1) to N/A (zone N/A)'
+      expect(test_log.journeys.first).to eq 'Journey 1: Canada Water (Zone 1) to N/A (Zone N/A)'
     end
   end
 
-  describe '#finish' do
+  describe 'at the end of a journey' do
     before(:each) do
       allow(test_journey).to receive(:entry_station).and_return(entry_station)
       allow(test_journey).to receive(:exit_station).and_return(exit_station, exit_station, exit_station, exit_station, nil)
@@ -32,7 +32,7 @@ RSpec.describe JourneyLog do
       test_log.start(entry_station)
       test_log.finish(exit_station)
       
-      expect(test_log.journeys.first).to eq 'Journey 1: Canada Water (zone 1) to Green Park (zone 2)'
+      expect(test_log.journeys.first).to eq 'Journey 1: Canada Water (Zone 1) to Green Park (Zone 2)'
     end
 
     it 'initialises a new journey' do
@@ -40,8 +40,11 @@ RSpec.describe JourneyLog do
       test_log.finish(exit_station)
       test_log.start(entry_station)
 
-      expect(test_log.journeys).to eq(['Journey 1: Canada Water (zone 1) to Green Park (zone 2)',
-                                       'Journey 2: Canada Water (zone 1) to N/A (zone N/A)'])
+      expect(test_log.journeys).to eq(['Journey 1: Canada Water (Zone 1) to Green Park (Zone 2)',
+                                       'Journey 2: Canada Water (Zone 1) to N/A (Zone N/A)'])
+    end
+
+    it 'saves journeys' do
     end
   end
 
