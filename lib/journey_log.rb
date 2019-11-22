@@ -11,7 +11,6 @@ class JourneyLog
   end
 
   def start(entry_station)
-    # print @journey.exit_station.name
     @journey.register_entry_station(entry_station)
     @journey_history.push @journey
   end

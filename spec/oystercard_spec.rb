@@ -3,8 +3,11 @@ require 'oystercard'
 RSpec.describe Oystercard do
   let(:test_oystercard) { Oystercard.new }
   let(:empty_oystercard) { Oystercard.new }
-  let(:entry_station) { double(:station, name: :canada_water, zone: 1) }
-  let(:exit_station) { double(:station, name: :green_park, zone: 2) }
+  let(:entry_station) { double(:station, name: :canada_water, zone: 2) }
+  let(:exit_station) { double(:station, name: :green_park, zone: 4) }
+  let(:entry_station2) { double(:station, name: :liverpool_street, zone: 1) }
+  let(:exit_station2) { double(:station, name: :mayfair, zone: 5) }
+
   let(:test_journey) { double(:journey, entry_station: entry_station, exit_station: exit_station, min_fare: 1, penalty_fare: 6) }
 
   before(:each) do
@@ -33,7 +36,6 @@ RSpec.describe Oystercard do
     end
   end
 
-  ##
   describe '#touch_in' do
     context 'when user has not touched out on last journey' do
       it 'should charge a penalty fare' do
@@ -49,7 +51,7 @@ RSpec.describe Oystercard do
       it 'should deduct the minumum fare' do
         test_oystercard.touch_in(entry_station)
 
-        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -test_journey.min_fare
+        expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -3
       end
     end
     
@@ -71,8 +73,27 @@ RSpec.describe Oystercard do
       test_oystercard.touch_in(entry_station)
       test_oystercard.touch_out(exit_station)
 
-      expect(test_oystercard.print_list_of_journeys.first).to eq 'Journey 1: Canada Water (zone 1) to Green Park (zone 2)'
+      expect(test_oystercard.print_list_of_journeys.first).to eq 'Journey 1: Canada Water (zone 2) to Green Park (zone 4)'
     end
   end
 
+  context 'when a journey crosses zones' do
+    it 'charges 3 pounds for a journey spanning zones 2 and 4' do
+      test_oystercard.touch_in(entry_station)
+
+      expect { test_oystercard.touch_out(exit_station) }.to change { test_oystercard.balance }.by -3
+    end
+
+    it 'charges 5 pounds for a journey spanning zones 1 and 5' do
+      test_oystercard.touch_in(entry_station2)
+
+      expect { test_oystercard.touch_out(exit_station2) }.to change { test_oystercard.balance }.by -5
+    end
+    
+    it 'charges minimum fare (£1) for a journey within the same zone' do
+      test_oystercard.touch_in(entry_station2)
+
+      expect { test_oystercard.touch_out(entry_station2) }.to change { test_oystercard.balance }.by -test_oystercard.min_fare
+    end
+  end
 end
