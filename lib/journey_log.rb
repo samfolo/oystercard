@@ -1,21 +1,23 @@
 require 'journey'
 
 class JourneyLog
+
+  attr_reader :journey
+  
   def initialize(journey_class = Journey)
     @journey_history = []
     @journey_class = journey_class
-    @current_journey = @journey_class.new
+    @journey = @journey_class.new
   end
 
   def start(entry_station)
-    # print @current_journey.exit_station.name
-    @current_journey.register_entry_station(entry_station)
-    @journey_history.push @current_journey
+    # print @journey.exit_station.name
+    @journey.register_entry_station(entry_station)
+    @journey_history.push @journey
   end
 
   def finish(exit_station)
-    @current_journey.register_exit_station(exit_station)
-    current_journey
+    current_journey.register_exit_station(exit_station)
   end
 
   def journeys
@@ -50,11 +52,11 @@ class JourneyLog
   end
 
   def current_journey
-    return @current_journey unless current_journey_complete?
-    @current_journey = @journey_class.new
+    return @journey unless current_journey_complete?
+    @journey = @journey_class.new
   end
 
   def current_journey_complete?
-    @current_journey.complete_journey?
+    @journey.complete_journey?
   end
 end

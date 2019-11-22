@@ -12,11 +12,6 @@ class Journey
     @exit_station = station
   end
 
-  def reset_journey
-    @entry_station = nil
-    @exit_station = nil
-  end
-
   def in_journey?
     !@entry_station.nil?
   end
