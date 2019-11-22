@@ -25,7 +25,7 @@ RSpec.describe JourneyLog do
   describe '#finish' do
     before(:each) do
       allow(test_journey).to receive(:entry_station).and_return(entry_station)
-      allow(test_journey).to receive(:exit_station).and_return(exit_station, exit_station, exit_station, nil)
+      allow(test_journey).to receive(:exit_station).and_return(exit_station, exit_station, exit_station, exit_station, nil)
     end
 
     it 'registers a journey has finished' do

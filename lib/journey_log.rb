@@ -22,24 +22,8 @@ class JourneyLog
   def journeys
     journey_list_to_display = []
     @journey_history.each_with_index do |journey, i|
-
-      if journey.entry_station == nil
-        entry_name = 'N/A'
-        entry_zone = 'N/A'
-      else
-        entry_name = format_name(journey.entry_station.name)
-        entry_zone = journey.entry_station.zone
-      end
-
-      if journey.exit_station == nil
-        exit_name = 'N/A'
-        exit_zone = 'N/A'
-      else
-        exit_name = format_name(journey.exit_station.name)
-        exit_zone = journey.exit_station.zone
-      end
-
-      journey_list_to_display << "Journey #{i + 1}: #{entry_name} (zone #{entry_zone}) to #{exit_name} (zone #{exit_zone})"
+      data = format_journey(journey)
+      journey_list_to_display << "Journey #{i + 1}: #{data[0]} (zone #{data[1]}) to #{data[2]} (zone #{data[3]})"
     end
     journey_list_to_display
   end
@@ -57,5 +41,13 @@ class JourneyLog
 
   def current_journey_complete?
     @journey.complete_journey?
+  end
+
+  def format_journey(journey)
+    entry_name = journey.entry_station == nil ? 'N/A' : format_name(journey.entry_station.name)
+    entry_zone = journey.entry_station == nil ? 'N/A' : journey.entry_station.zone
+    exit_name = journey.exit_station == nil ? 'N/A' : format_name(journey.exit_station.name)
+    exit_zone = journey.exit_station == nil ? 'N/A' : journey.exit_station.zone
+    [entry_name, entry_zone, exit_name, exit_zone]
   end
 end
